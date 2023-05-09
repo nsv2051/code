@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# 从环境变量中获取授权密钥的 URL
-authorized_keys_url=https://github.com/nsv2051.keys
-
 # 从 URL 下载授权密钥文件
-curl -sSL "$authorized_keys_url" > /tmp/authorized_keys
+curl -sSL https://github.com/nsv2051.keys > /tmp/authorized_keys
 
 # 检查授权密钥文件是否下载成功
 if [ ! -s /tmp/authorized_keys ]; then
