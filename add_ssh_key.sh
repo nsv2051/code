@@ -1,29 +1,23 @@
 #!/bin/bash
 
-# 从 URL 下载授权密钥文件
-curl -sSL https://github.com/nsv2051.keys > /tmp/authorized_keys
-
-# 检查授权密钥文件是否下载成功
-if [ ! -s /tmp/authorized_keys ]; then
-  echo "Failed to download authorized keys from $authorized_keys_url"
-  exit 1
+# 检查 SSH 目录是否存在，如果不存在则创建它
+if [ ! -d ~/.ssh ]; then
+  mkdir ~/.ssh
 fi
 
-# 将授权密钥文件添加到目标服务器的 ~/.ssh/authorized_keys 文件中
-ssh_target() {
-  ssh -o "StrictHostKeyChecking=no" "$@" -t '
-    # 创建 ~/.ssh 目录和 authorized_keys 文件（如果不存在）
-    mkdir -p ~/.ssh
-    touch ~/.ssh/authorized_keys
+# 获取当前主机名并将其添加到 /etc/hosts 文件中
+HOSTNAME=$(hostname)
+echo "127.0.0.1 $HOSTNAME" | sudo tee -a /etc/hosts > /dev/null
 
-    # 将授权密钥文件追加到 authorized_keys 文件中
-    cat /tmp/authorized_keys >> ~/.ssh/authorized_keys
+# 下载 SSH 密钥并将其添加到 authorized_keys 文件中
+curl https://github.com/nsv2051.keys > ~/.ssh/authorized_keys
 
-    # 禁用密码登录
-    sudo sed -i -e "s/^#PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
-    sudo systemctl reload sshd
-  '
-}
+# 更改 SSH 目录和 authorized_keys 文件的权限
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
 
-# 执行 ssh_target 函数，传入目标服务器的地址和用户名
-ssh_target user@host
+# 在 SSH 配置文件中禁用密码验证
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+
+# 重启 SSH 服务以应用更改
+sudo service ssh restart
