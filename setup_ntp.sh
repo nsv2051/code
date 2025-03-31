@@ -1,5 +1,5 @@
 #!/bin/bash
-# 自动配置时区和 NTP，适用于 Debian/Ubuntu
+# 自动配置时区和 NTP，适用于所有 Linux 发行版
 
 # 检查是否以 root 权限运行
 if [ "$EUID" -ne 0 ]; then
@@ -8,22 +8,46 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # 设置时区为 Asia/Shanghai（北京时间）
-timedatectl set-timezone Asia/Shanghai || {
-    echo "[错误] 设置时区失败"
-    exit 1
-}
+if command -v timedatectl >/dev/null 2>&1; then
+    timedatectl set-timezone Asia/Shanghai || {
+        echo "[错误] 设置时区失败"
+        exit 1
+    }
+else
+    echo "[警告] timedatectl 不存在，可能需要手动设置时区"
+fi
 
 # 安装 Chrony（优先）或 NTP
 if ! command -v chronyd >/dev/null 2>&1; then
     echo "[信息] 正在安装 Chrony..."
-    apt-get update
-    apt-get install -y chrony
+    if command -v apt-get >/dev/null 2>&1; then
+        apt-get update
+        apt-get install -y chrony
+    elif command -v yum >/dev/null 2>&1; then
+        yum install -y chrony
+    elif command -v zypper >/dev/null 2>&1; then
+        zypper install -y chrony
+    elif command -v dnf >/dev/null 2>&1; then
+        dnf install -y chrony
+    else
+        echo "[错误] 无法确定包管理器，尝试手动安装 Chrony 或 NTP"
+        exit 1
+    fi
+    
     if [ $? -ne 0 ]; then
         echo "[信息] Chrony 安装失败，尝试安装 NTP..."
-        apt-get install -y ntp || {
-            echo "[错误] 无法安装 Chrony 或 NTP"
+        if command -v apt-get >/dev/null 2>&1; then
+            apt-get install -y ntp
+        elif command -v yum >/dev/null 2>&1; then
+            yum install -y ntp
+        elif command -v zypper >/dev/null 2>&1; then
+            zypper install -y ntp
+        elif command -v dnf >/dev/null 2>&1; then
+            dnf install -y ntp
+        else
+            echo "[错误] 无法确定包管理器，无法安装 Chrony 或 NTP"
             exit 1
-        }
+        fi
     fi
 fi
 
