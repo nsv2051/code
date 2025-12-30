@@ -29,3 +29,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/nsv2051/code/main/sync-t
 ```bash
 bash -c "$(wget -qO- https://raw.githubusercontent.com/nsv2051/code/main/sync-time.sh)"
 ```
+# mtg一键
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/nsv2051/code/main/automtg.sh)
+
+```
