@@ -1,6 +1,6 @@
 # 一键设置密钥登陆
  ```
- curl -s https://gitproxy.eu.org/https://raw.githubusercontent.com/nsv2051/code/main/add_ssh_key.sh | bash
+ curl -s https://gitproxy.eu.org/https://raw.githubusercontent.com/nsv2051/scripts/main/add_ssh_key.sh | bash
  ```
 # Time Sync Script
 
@@ -23,14 +23,14 @@
 
 #### 使用 curl
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/nsv2051/code/main/sync-time.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nsv2051/scripts/main/sync-time.sh)"
 ```
 #### 使用 wget
 ```bash
-bash -c "$(wget -qO- https://raw.githubusercontent.com/nsv2051/code/main/sync-time.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/nsv2051/scripts/main/sync-time.sh)"
 ```
 # mtg一键
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nsv2051/code/main/automtg.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/nsv2051/scripts/main/automtg.sh)
 
 ```
