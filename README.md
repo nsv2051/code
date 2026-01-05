@@ -80,7 +80,7 @@ syscard
 ### 运行示例
 ```bash
 # 一键运行（推荐）
-curl -sL https://raw.githubusercontent.com/nsv2051/scripts/main/systool.sh | sudo bash
+bash -c "$(curl -sL https://raw.githubusercontent.com/nsv2051/scripts/main/systool.sh)"
 
 # 下载脚本后运行
 wget https://raw.githubusercontent.com/nsv2051/scripts/main/systool.sh
