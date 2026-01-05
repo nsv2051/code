@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# 颜色定义
+#颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # 恢复默认颜色
+NC='\033[0m' #恢复默认颜色
 
 # 显示标题
 display_header() {
@@ -29,6 +29,9 @@ check_root() {
 # 电源管理
 power_management() {
     while true; do
+        # 清空输入缓冲区
+        while read -t 0.1 -r -s; do :; done 2>/dev/null || true
+
         display_header
         echo -e "${BLUE}电源管理选项：${NC}"
         echo "1) 立即关机"
@@ -73,6 +76,9 @@ disk_check() {
 # 资源监控
 resource_monitor() {
     while true; do
+        # 清空输入缓冲区
+        while read -t 0.1 -r -s; do :; done 2>/dev/null || true
+
         display_header
         echo -e "${BLUE}资源监控选项：${NC}"
         echo "1) 实时进程监控（top）"
@@ -142,7 +148,7 @@ change_repo() {
         4) mirror="https://mirrors.tuna.tsinghua.edu.cn" ;;
         5) mirror="http://mirrors.163.com" ;;
         6) mirror="https://mirrors.ustc.edu.cn" ;;
-        *) 
+        *)
             echo -e "${RED}无效选项，使用默认源${NC}"
             return
             ;;
@@ -212,7 +218,7 @@ set_dns() {
     read -p "请选择DNS服务器 (1-4): " dns_choice
 
     case $dns_choice in
-        1) 
+        1)
             dns1="8.8.8.8"
             dns2="8.8.4.4"
             ;;
@@ -417,7 +423,7 @@ configure_ntp() {
 # 主菜单
 while true; do
     # 清空输入缓冲区（关键修复）
-    while read -t 0.1; do :; done 2>/dev/null || true
+    while read -t 0.1 -r -s; do :; done 2>/dev/null || true
 
     display_header
     echo -e "${BLUE}主菜单：${NC}"
@@ -434,8 +440,13 @@ while true; do
     echo "11) 配置CPU工作模式"
     echo "12) 通过SLAAC获取IPv6"
     echo "15) 设置NTP自动校时服务器"
-    read -t 10 -p "请输入选项 (1-12,15): " main_choice
-    main_choice=${main_choice:-9}  # 设置默认值为退出
+    echo ""
+    read -p "请输入选项 (1-12,15): " main_choice
+
+    # 如果输入为空，重新显示菜单
+    if [ -z "$main_choice" ]; then
+        continue
+    fi
 
     case $main_choice in
         1)
