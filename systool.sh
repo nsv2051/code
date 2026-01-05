@@ -416,6 +416,9 @@ configure_ntp() {
 
 # 主菜单
 while true; do
+    # 清空输入缓冲区（关键修复）
+    while read -t 0.1; do :; done 2>/dev/null || true
+
     display_header
     echo -e "${BLUE}主菜单：${NC}"
     echo "1) 电源管理"
@@ -431,7 +434,8 @@ while true; do
     echo "11) 配置CPU工作模式"
     echo "12) 通过SLAAC获取IPv6"
     echo "15) 设置NTP自动校时服务器"
-    read -p "请输入选项 (1-12,15): " main_choice
+    read -t 10 -p "请输入选项 (1-12,15): " main_choice
+    main_choice=${main_choice:-9}  # 设置默认值为退出
 
     case $main_choice in
         1)
